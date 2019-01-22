@@ -9,7 +9,7 @@
     'show-ranges': rangesArray.length
 }" [class]="'drops-' + drops + '-' + opens">
 
-  <div class="ranges" style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
+  <div class="ranges" *ngIf="rangesArray.length" style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
     <div style="    padding: 15px 0;border-bottom: 1px solid gainsboro;">
       <ul>
         <li *ngIf="showCustomRangeLabel" style="width: 100%;display: block;">
