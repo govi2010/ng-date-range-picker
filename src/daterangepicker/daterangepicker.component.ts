@@ -38,7 +38,6 @@ export enum SideEnum {
   }]
 })
 export class DaterangepickerComponent implements OnInit {
-  private _old: { start: any, end: any } = {start: null, end: null};
   chosenLabel: string;
   calendarVariables: { left: any, right: any } = {left: {}, right: {}};
   timepickerVariables: { left: any, right: any } = {left: {}, right: {}};
@@ -50,7 +49,6 @@ export class DaterangepickerComponent implements OnInit {
   // used in template for compile time support of enum values.
   sideEnum = SideEnum;
   hoveredDate: any;
-
   @Input()
   minDate: _moment.Moment = null;
   @Input()
@@ -95,15 +93,6 @@ export class DaterangepickerComponent implements OnInit {
   firstDayOfNextMonthClass: string = null;
   @Input()
   lastDayOfPreviousMonthClass: string = null;
-  _locale: LocaleConfig = {};
-  @Input() set locale(value) {
-    this._locale = {...this.localeConfig, ...value};
-  }
-
-  get locale(): any {
-    return this._locale;
-  }
-
   // custom ranges
   @Input()
   ranges: any = {};
@@ -117,14 +106,12 @@ export class DaterangepickerComponent implements OnInit {
   showRangeLabelOnInput = false;
   chosenRange: string;
   rangesArray: Array<any> = [];
-
   // some state information
   isShown: Boolean = false;
   inline = true;
   leftCalendar: any = {};
   rightCalendar: any = {};
   showCalInRanges: Boolean = false;
-
   options: any = {}; // should get some opt from user
   @Input() drops: string;
   @Input() opens: string;
@@ -132,6 +119,7 @@ export class DaterangepickerComponent implements OnInit {
   @Output('rangeClicked') rangeClicked: EventEmitter<Object>;
   @Output('datesUpdated') datesUpdated: EventEmitter<Object>;
   @ViewChild('pickerContainer') pickerContainer: ElementRef;
+  private _old: { start: any, end: any } = {start: null, end: null};
 
   constructor(
     private el: ElementRef,
@@ -143,6 +131,16 @@ export class DaterangepickerComponent implements OnInit {
     this.datesUpdated = new EventEmitter();
     this.locale = {...this._locale};
     this.updateMonthsInView();
+  }
+
+  _locale: LocaleConfig = {};
+
+  get locale(): any {
+    return this._locale;
+  }
+
+  @Input() set locale(value) {
+    this._locale = {...this.localeConfig, ...value};
   }
 
   ngOnInit() {
@@ -857,6 +855,24 @@ export class DaterangepickerComponent implements OnInit {
     this.updateCalendars();
   }
 
+  mouseUp(e: MouseWheelEvent) {
+    if (e.deltaY < 0) {
+      // debugger;
+      console.log('scrolling up');
+      this.clickPrev(SideEnum.left);
+    }
+    if (e.deltaY > 0) {
+      if (this.singleDatePicker) {
+        this.clickNext(SideEnum.left);
+      } else {
+        this.clickNext(SideEnum.right);
+      }
+    }
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return false;
+  }
+
   /**
    * When selecting a date
    * @param e event: get value by e.target.value
@@ -1051,6 +1067,19 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   /**
+   * Find out if the current calendar row has current month days
+   * (as opposed to consisting of only previous/next month days)
+   */
+  hasCurrentMonthDays(currentMonth, row) {
+    for (let day = 0; day < 7; day++) {
+      if (row[day].month() === currentMonth) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    *
    * @param date the date to add time
    * @param side left or right
@@ -1162,18 +1191,5 @@ export class DaterangepickerComponent implements OnInit {
       }
       this.calendarVariables[side].classes[row].classList = rowClasses.join(' ');
     }
-  }
-
-  /**
-   * Find out if the current calendar row has current month days
-   * (as opposed to consisting of only previous/next month days)
-   */
-  hasCurrentMonthDays(currentMonth, row) {
-    for (let day = 0; day < 7; day++) {
-      if (row[day].month() === currentMonth) {
-        return true;
-      }
-    }
-    return false;
   }
 }

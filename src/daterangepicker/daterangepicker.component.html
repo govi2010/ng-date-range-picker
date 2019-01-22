@@ -29,18 +29,6 @@
                   (click)="clickRange($event, range)"
                   [disabled]="disableRange(range)"
                   [ngClass]="{'active': range === chosenRange}">{{range}}
-            <!--<div style="position: absolute;right: 3px;top: 3px;" *ngIf="i === 2">-->
-            <!--<span class="mat-select-arrow"></span>-->
-            <!--<div class="drop-down">-->
-
-            <!--<ul>-->
-            <!--<li><button>Sun – Sat</button></li>-->
-            <!--<li><button>Sun – Sat</button></li>-->
-            <!--</ul>-->
-            <!--</div>-->
-
-            <!--</div>-->
-
           </button>
 
         </li>
@@ -65,7 +53,7 @@
 
   </div>
 
-  <div style="display: flex;flex-direction: column;" (scroll)="clickNext(sideEnum.left)">
+  <div style="display: flex;flex-direction: column;" (mousewheel)="mouseUp($event)">
 
     <div style="flex:1 1 auto;overflow: auto;">
 
@@ -139,7 +127,8 @@
               </tr>
 
               <tr>
-                <th *ngIf="showWeekNumbers || showISOWeekNumbers" class="week"><span>{{this.locale.weekLabel}}</span></th>
+                <th *ngIf="showWeekNumbers || showISOWeekNumbers" class="week"><span>{{this.locale.weekLabel}}</span>
+                </th>
                 <th *ngFor="let dayofweek of locale.daysOfWeek"><span>{{dayofweek}}</span></th>
               </tr>
 
@@ -164,7 +153,7 @@
                     [class]="calendarVariables.left.classes[row][col]"
                     (click)="clickDate($event, sideEnum.left, row, col)"
                     (mouseenter)="hoveredDate = calendarVariables.left.calendar[row][col]"
-                [ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">
+                    [ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">
                   <span>{{calendarVariables.left.calendar[row][col].date()}}</span>
                 </td>
 
@@ -201,9 +190,7 @@
           </div>
         </div>
 
-        <div class="calendar right"
-             *ngIf="showCalInRanges && !singleDatePicker"
-        >
+        <div class="calendar right" *ngIf="showCalInRanges && !singleDatePicker">
 
           <div class="calendar-table">
             <table class="table-condensed" *ngIf="calendarVariables">
@@ -258,7 +245,8 @@
               </tr>
 
               <tr>
-                <th *ngIf="showWeekNumbers || showISOWeekNumbers" class="week"><span>{{this.locale.weekLabel}}</span></th>
+                <th *ngIf="showWeekNumbers || showISOWeekNumbers" class="week"><span>{{this.locale.weekLabel}}</span>
+                </th>
                 <th *ngFor="let dayofweek of locale.daysOfWeek"><span>{{dayofweek}}</span></th>
               </tr>
               </thead>
