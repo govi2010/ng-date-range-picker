@@ -4,8 +4,8 @@
   "newProjectRoot": "projects",
   "projects": {
     "ng-date-range-picker": {
-      "root": "",
-      "sourceRoot": "src",
+      "root": "demo/src",
+      "sourceRoot": "demo/src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {},
@@ -13,17 +13,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ng-date-range-picker",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
+            "outputPath": "demo/dist/ng-date-range-picker",
+            "index": "demo/src/index.html",
+            "main": "demo/src/main.ts",
+            "polyfills": "demo/src/polyfills.ts",
+            "tsConfig": "demo/src/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "demo/src/favicon.ico",
+              "demo/src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "demo/src/styles.scss"
             ],
             "scripts": []
           },
@@ -85,8 +85,8 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "demo/src/tsconfig.app.json",
+              "demo/src/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

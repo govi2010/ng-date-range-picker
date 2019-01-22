@@ -1,0 +1,45 @@
+<mat-toolbar>Simple daterangepicker</mat-toolbar>
+<div class="row">
+  <div class="col s6">
+    <input type="text" ngxDaterangepickerMd
+    [(ngModel)]="selected" class="form-control" placeholder="Choose date"
+    (ngModelChange)="ngModelChange($event)" (change)="change($event)" showCancel="true"
+    />
+  </div>
+  <div class="col s6 right-align">
+    <br/>
+    <button type="button" class="ngx-daterangepicker-action waves-effect waves-light btn" (click)="open($event)">open from a button</button>
+    <button type="button" *ngIf="selected && selected.startDate" class="ngx-daterangepicker-action waves-effect waves-light btn red" (click)="clear($event)">Clear</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+    <b>Using the change event :</b>
+      <pre class="prettyprint"><code class="html">&lt;input type="text" ngxDaterangepickerMd
+[(ngModel)]="selected" placeholder="Choose date" (change)="change($event)"/&gt;</code>
+    </pre>
+
+   <b>Or with ngModel :</b>
+
+      <pre class="prettyprint"><code class="html">&lt;input type="text" ngxDaterangepickerMd
+[(ngModel)]="selected" placeholder="Choose date"
+(ngModelChange)="ngModelChange($event)"/&gt;</code>
+    </pre>
+  </div>
+</div>
+<hr/>
+<div class="row">
+  <div class="col s12">
+      <h1>Inline daterangepicker</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+    <ngx-daterangepicker-material (choosedDate)="choosedDate($event)" [locale]="{applyLabel: 'Done', firstDay: 1}"></ngx-daterangepicker-material>
+  </div>
+</div>
+<div class="row">
+  <div class="col s12">
+      Choosed date: {{inlineDate | json}}
+  </div>
+</div>
