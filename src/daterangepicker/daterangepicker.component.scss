@@ -379,7 +379,7 @@ $input-height: 3rem !default;
       border-top: 1px dashed gray !important;
       border-left: 0;
       border-right: 0;
-      border-radius: 0 !important; ;
+      border-radius: 0 !important;;
     }
 
     &.start-date {
@@ -831,46 +831,55 @@ $input-height: 3rem !default;
   }
 }
 
-.in-range.available:hover{
+.in-range.available:hover {
   background-color: #c6dafc !important;
   border-radius: 0 !important;
 }
-.in-range.available{
+
+.in-range.available {
 
   border-radius: 0 !important;
 }
-td:hover span{
+
+td:hover span {
   background-color: #f8f8f8;
   border: 1px solid;
 }
-.off.in-range{
-  &::before{
+
+.off.in-range {
+  &::before {
     content: '';
     background-color: unset !important;
   }
 }
-.in-range-hovered.in-range{
-  &::before{
+
+.in-range-hovered.in-range {
+  &::before {
     content: "";
     border-bottom: 1px dashed gray;
     border-top: 1px dashed gray;
   }
 }
-.md-drppicker td.start-date.active{
-  span{
+
+.md-drppicker td.start-date.active {
+  span {
     background-color: #36469d;
   }
 }
-.md-drppicker td.end-date.active{
+
+.md-drppicker td.end-date.active {
   background-color: white !important;
-  span{
+
+  span {
     background-color: #36469d;
   }
-  .available:hover{
+
+  .available:hover {
     background-color: unset !important;
 
   }
 }
+
 td span {
   position: relative;
   z-index: 999;
@@ -882,6 +891,7 @@ td span {
   border-radius: 100%;
 
 }
+
 //td.start-date::after {
 //  content: "";
 //  background-color: #c6dafc;
@@ -893,3 +903,7 @@ td span {
 //  display: inline-block;
 //
 //}
+.se {
+  width: 270px;
+  opacity: 0;
+}

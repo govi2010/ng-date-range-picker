@@ -9,7 +9,8 @@
     'show-ranges': rangesArray.length
 }" [class]="'drops-' + drops + '-' + opens">
 
-  <div class="ranges" *ngIf="rangesArray.length" style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
+  <div class="ranges" *ngIf="rangesArray.length"
+       style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
     <div style="    padding: 15px 0;border-bottom: 1px solid gainsboro;">
       <ul>
         <li *ngIf="showCustomRangeLabel" style="width: 100%;display: block;">
@@ -38,12 +39,13 @@
       <ul>
         <li>
           <button><input type="text"
-                         style="width: 28px;height: 17px;margin-right: 3px;font-size: 12px;margin-bottom: 0;"> days up
+                         style="width: 28px;height: 17px;margin-right: 3px;font-size: 12px;margin-bottom: 0;"
+                         (change)="uptoToday($event,0,$event.target.value)"> days up
             to today
           </button>
         </li>
         <li>
-          <button><input type="text"
+          <button><input type="text" (change)="uptoToday($event,1,$event.target.value)"
                          style="width: 28px;height: 17px;margin-right: 3px;font-size: 12px;margin-bottom: 0;"> days up
             to yesterday
           </button>
@@ -58,7 +60,19 @@
     <div style="flex:1 1 auto;overflow: auto;">
 
       <div style="display: flex ;flex-direction: column;" (mouseout)="hoveredDate = null">
-
+        <div>
+          <div style="display: flex;justify-content: space-around;padding-top: 10px">
+            <input matInput placeholder="start date" mask="d0/m0/0000" [dropSpecialCharacters]="true"
+                   [value]="startDateString" (change)="setStartDate($event.target.value)"
+                   style="width: 100px;height:30px;font-size: 12px;">
+            <span style="display: flex;align-items: flex-start">
+              _
+            </span>
+            <input matInput placeholder="end date" mask="d0/m0/0000" [dropSpecialCharacters]="true"
+                   [value]="endDateString" (change)="setEndDate($event.target.value)"
+                   style="width: 100px;height: 30px;font-size: 12px;">
+          </div>
+        </div>
         <div class="calendar" [ngClass]="{right: singleDatePicker, left: !singleDatePicker}"
              *ngIf="showCalInRanges">
           <div class="calendar-table" *ngIf="calendarVariables">
@@ -95,7 +109,7 @@
 
                     </div>
 
-                    <div>
+                    <div style="padding-left: 5px">
                       {{ calendarVariables?.left?.calendar[1][1].format(" YYYY")}}
                       <select class="yearselect" (change)="yearChanged($event, sideEnum.left)">
                         <option *ngFor="let y of calendarVariables.left.dropdowns.yearArrays"
@@ -215,16 +229,16 @@
                           [disabled]="(calendarVariables.right.dropdowns.inMinYear && m < calendarVariables.right.minDate.month()) || (calendarVariables.right.dropdowns.inMaxYear && m > calendarVariables.right.maxDate.month())"
                           *ngFor="let m of calendarVariables.right.dropdowns.monthArrays" [value]="m"
                           [selected]="calendarVariables.right.dropdowns.currentMonth == m">
-                          {{locale.monthNames[m]}}
+                          {{locale.monthNames[m] }}
                         </option>
                       </select>
                     </div>
-                    <div>
+                    <div style="padding-left: 5px">
                       {{ calendarVariables?.right?.calendar[1][1].format(" YYYY")}}
                       <select class="yearselect" (change)="yearChanged($event, sideEnum.right)">
                         <option *ngFor="let y of calendarVariables.right.dropdowns.yearArrays"
                                 [selected]="y === calendarVariables.right.dropdowns.currentYear">
-                          {{y}}
+                          {{' ' + y}}
                         </option>
                       </select>
                     </div>

@@ -50,9 +50,9 @@ export class DaterangepickerComponent implements OnInit {
   sideEnum = SideEnum;
   hoveredDate: any;
   @Input()
-  minDate: _moment.Moment = null;
+  minDate: _moment.Moment = moment().subtract(10, 'years');
   @Input()
-  maxDate: _moment.Moment = null;
+  maxDate: _moment.Moment = moment().add(5, 'years');
   @Input()
   autoApply: Boolean = false;
   @Input()
@@ -143,8 +143,15 @@ export class DaterangepickerComponent implements OnInit {
     this._locale = {...this.localeConfig, ...value};
   }
 
+  get startDateString(): string {
+    return this.startDate.format(this.locale.format);
+  }
+  get endDateString(): string {
+    return this.endDate.format(this.locale.format);
+  }
+
   ngOnInit() {
-    if (this.locale.firstDay != 0) {
+    if (this.locale.firstDay !== 0) {
       let iterator = this.locale.firstDay;
       while (iterator > 0) {
         this.locale.daysOfWeek.push(this.locale.daysOfWeek.shift());
@@ -442,6 +449,7 @@ export class DaterangepickerComponent implements OnInit {
       calendar: calendar
     };
     if (this.showDropdowns) {
+      // debugger;
       const currentMonth = calendar[1][1].month();
       const currentYear = calendar[1][1].year();
       const maxYear = (maxDate && maxDate.year()) || (currentYear + 5);
@@ -467,6 +475,7 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   setStartDate(startDate) {
+    debugger;
     if (typeof startDate === 'string') {
       this.startDate = moment(startDate, this.locale.format);
     }
@@ -503,6 +512,7 @@ export class DaterangepickerComponent implements OnInit {
     }
 
     this.updateMonthsInView();
+    this.updateView();
   }
 
   setEndDate(endDate) {
@@ -542,6 +552,7 @@ export class DaterangepickerComponent implements OnInit {
     if (this.autoApply) {
       this.datesUpdated.emit({startDate: this.startDate, endDate: this.endDate});
     }
+    this.updateView();
   }
 
   @Input()
@@ -857,20 +868,48 @@ export class DaterangepickerComponent implements OnInit {
 
   mouseUp(e: MouseWheelEvent) {
     if (e.deltaY < 0) {
-      // debugger;
-      console.log('scrolling up');
-      this.clickPrev(SideEnum.left);
+      if (this.singleDatePicker) {
+        if ((!this.calendarVariables.left.maxDate ||
+          this.calendarVariables.left.maxDate.isAfter(this.calendarVariables.left.calendar.lastDay)) &&
+          (!this.linkedCalendars || this.singleDatePicker)) {
+          this.clickNext(SideEnum.left);
+        }
+      } else {
+        if (!this.calendarVariables.right.maxDate ||
+          this.calendarVariables.right.maxDate.isAfter(this.calendarVariables.right.calendar.lastDay)
+          && (!this.linkedCalendars || this.singleDatePicker || true)) {
+          this.clickNext(SideEnum.right);
+        }
+      }
     }
     if (e.deltaY > 0) {
       if (this.singleDatePicker) {
-        this.clickNext(SideEnum.left);
+        if (!this.calendarVariables.left.minDate ||
+          this.calendarVariables.left.minDate.isBefore(this.calendarVariables.left.calendar.firstDay) &&
+          (!this.linkedCalendars || true)) {
+          this.clickPrev(SideEnum.left);
+        }
+        // this.clickNext(SideEnum.left);
       } else {
-        this.clickNext(SideEnum.right);
+        if (!this.calendarVariables.left.minDate ||
+          this.calendarVariables.left.minDate.isBefore(this.calendarVariables.left.calendar.firstDay) &&
+          (!this.linkedCalendars || true)) {
+          this.clickPrev(SideEnum.left);
+        }
       }
     }
     e.stopPropagation();
     e.stopImmediatePropagation();
     return false;
+  }
+
+  uptoToday(e: Event, startFrom: number, days: number) {
+    const dates = [moment().subtract(days, 'days'), moment().subtract(startFrom, 'days')];
+    this.startDate = dates[0].clone();
+    this.endDate = dates[1].clone();
+
+    this.calculateChosenLabel();
+    this.updateView();
   }
 
   /**
@@ -939,7 +978,7 @@ export class DaterangepickerComponent implements OnInit {
    */
   clickRange(e, label) {
     this.chosenRange = label;
-    if (label == this.locale.customRangeLabel) {
+    if (label === this.locale.customRangeLabel) {
       // this.chosenLabel = label;
       this.isShown = true; // show calendars
       this.showCalInRanges = true;
@@ -971,6 +1010,7 @@ export class DaterangepickerComponent implements OnInit {
       }
 
     }
+    this.updateView();
   }
 
   show(e?) {
