@@ -267,18 +267,18 @@ export class DaterangepickerDirective implements OnInit, OnChanges, DoCheck {
       let containerTop;
       const container = this.picker.pickerContainer.nativeElement;
       const element = this._el.nativeElement;
-      if (this.drops && this.drops == 'up') {
+      if (this.drops && this.drops === 'up') {
         containerTop = (element.offsetTop - container.clientHeight) + 'px';
       } else {
         containerTop = 'auto';
       }
-      if (this.opens == 'left') {
+      if (this.opens === 'left') {
         style = {
             top: containerTop,
             left: (element.offsetLeft - container.clientWidth + element.clientWidth) + 'px',
             right: 'auto'
         };
-      } else if (this.opens == 'center') {
+      } else if (this.opens === 'center') {
           style = {
             top: containerTop,
             left: (element.offsetLeft  +  element.clientWidth / 2

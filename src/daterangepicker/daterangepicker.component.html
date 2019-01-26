@@ -72,9 +72,119 @@
                    [value]="endDateString" (change)="setEndDate($event.target.value)"
                    style="width: 100px;height: 30px;font-size: 12px;">
           </div>
+          <div style="display: flex;justify-content: space-between;padding:10px  12px">
+            <div>
+              <span style="font-weight: 700;cursor: pointer" (click)="monthPickerClick()">
+                <ng-container *ngIf="showDropdowns && calendarVariables.left.dropdowns">
+                    <!--<div>-->
+
+                  {{this.locale.monthNames[calendarVariables?.left?.calendar[1][1].month()]}}
+
+                  <!--<select class="monthselect" (change)="monthChanged($event, sideEnum.left)">-->
+                  <!--<option-->
+                  <!--[disabled]="(calendarVariables.left.dropdowns.inMinYear && m < calendarVariables.left.minDate.month()) || (calendarVariables.left.dropdowns.inMaxYear && m > calendarVariables.left.maxDate.month())"-->
+                  <!--*ngFor="let m of calendarVariables.left.dropdowns.monthArrays" [value]="m"-->
+                  <!--[selected]="calendarVariables.left.dropdowns.currentMonth == m">-->
+                  <!--{{locale.monthNames[m]}}-->
+                  <!--</option>-->
+                  <!--</select>-->
+
+                  <!--</div>-->
+
+                  <!--<div style="padding-left: 5px">-->
+                  {{ calendarVariables?.left?.calendar[1][1].format(" YYYY")}}
+                  <!--<select class="yearselect" (change)="yearChanged($event, sideEnum.left)">-->
+                  <!--<option *ngFor="let y of calendarVariables.left.dropdowns.yearArrays"-->
+                  <!--[selected]="y === calendarVariables.left.dropdowns.currentYear">-->
+                  <!--{{y}}-->
+                  <!--</option>-->
+                  <!--</select>-->
+                  <!--</div>-->
+
+                  </ng-container>
+
+                  <ng-container *ngIf="!showDropdowns || !calendarVariables.left.dropdowns">
+                    {{this.locale.monthNames[calendarVariables?.left?.calendar[1][1].month()]}}  {{ calendarVariables?.left?.calendar[1][1].format(" YYYY")}}
+                  </ng-container>
+              </span>
+
+            </div>
+
+            <div style="width: 100px;display: flex;justify-content: space-around">
+
+              <span (click)="clickPrev(sideEnum.right)" class="prev available"></span>
+
+              <span class="next available" (click)="clickNext(sideEnum.right)"></span>
+
+            </div>
+
+
+          </div>
+
+          <div class="d-container" *ngIf="showMonthPicker">
+            <div>
+              <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 9px 0;;">
+                jan 2019</h2>
+              <div class="dropdown-containt">
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+
+              </div>
+            </div>
+            <div>
+              <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 9px 0;;">
+                jan 2019</h2>
+              <div class="dropdown-containt">
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+
+              </div>
+            </div>
+            <div>
+              <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 16px 0;;">
+                jan 2019</h2>
+              <div class="dropdown-containt">
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+                <div class="d-month">jan</div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
+
         <div class="calendar" [ngClass]="{right: singleDatePicker, left: !singleDatePicker}"
-             *ngIf="showCalInRanges">
+             *ngIf="showCalInRanges && !showMonthPicker">
           <div class="calendar-table" *ngIf="calendarVariables">
             <table class="table-condensed">
               <thead>
@@ -83,7 +193,7 @@
 
                 <ng-container
                   *ngIf="!calendarVariables.left.minDate || calendarVariables.left.minDate.isBefore(calendarVariables.left.calendar.firstDay) && (!this.linkedCalendars || true)">
-                  <th (click)="clickPrev(sideEnum.left)" class="prev available">
+                  <th>
                   </th>
                 </ng-container>
 
@@ -150,28 +260,32 @@
 
               <tbody class="drp-animate">
 
-              <tr *ngFor="let row of calendarVariables.left.calRows"
-                  [class]="calendarVariables.left.classes[row].classList">
+              <ng-container *ngFor="let row of calendarVariables.left.calRows">
+                <tr *ngIf="row<5"
+                    [class]="calendarVariables.left.classes[row].classList">
 
-                <!-- add week number -->
-                <td class="week" *ngIf="showWeekNumbers">
-                  <span>{{calendarVariables.left.calendar[row][0].week()}}</span>
-                </td>
+                  <!-- add week number -->
+                  <td class="week" *ngIf="showWeekNumbers">
+                    <span>{{calendarVariables.left.calendar[row][0].week()}}</span>
+                  </td>
 
-                <td class="week" *ngIf="showISOWeekNumbers">
-                  <span>{{calendarVariables.left.calendar[row][0].isoWeek()}}</span>
-                </td>
+                  <td class="week" *ngIf="showISOWeekNumbers">
+                    <span>{{calendarVariables.left.calendar[row][0].isoWeek()}}</span>
+                  </td>
 
-                <!-- cal -->
-                <td *ngFor="let col of calendarVariables.left.calCols"
-                    [class]="calendarVariables.left.classes[row][col]"
-                    (click)="clickDate($event, sideEnum.left, row, col)"
-                    (mouseenter)="hoveredDate = calendarVariables.left.calendar[row][col]"
-                    [ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">
-                  <span>{{calendarVariables.left.calendar[row][col].date()}}</span>
-                </td>
+                  <!-- cal -->
+                  <td *ngFor="let col of calendarVariables.left.calCols"
+                      [class]="calendarVariables.left.classes[row][col]"
+                      (click)="clickDate($event, sideEnum.left, row, col)"
+                      (mouseenter)="hoveredDate = calendarVariables.left.calendar[row][col]"
+                      [ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">
+                    <span
+                      *ngIf="!(calendarVariables.left.classes[row][col].indexOf('off')>-1)">{{calendarVariables.left.calendar[row][col].date()}}</span>
+                  </td>
 
-              </tr>
+                </tr>
+              </ng-container>
+
               </tbody>
             </table>
           </div>
@@ -204,7 +318,7 @@
           </div>
         </div>
 
-        <div class="calendar right" *ngIf="showCalInRanges && !singleDatePicker">
+        <div class="calendar right" *ngIf="showCalInRanges && !singleDatePicker && !showMonthPicker">
 
           <div class="calendar-table">
             <table class="table-condensed" *ngIf="calendarVariables">
@@ -213,7 +327,7 @@
                 <th *ngIf="showWeekNumbers || showISOWeekNumbers"></th>
                 <ng-container
                   *ngIf="(!calendarVariables.right.minDate || calendarVariables.right.minDate.isBefore(calendarVariables.right.calendar.firstDay)) && (!this.linkedCalendars)">
-                  <th (click)="clickPrev(sideEnum.right)" class="prev available">
+                  <th class="available">
                   </th>
                 </ng-container>
                 <ng-container
@@ -249,7 +363,7 @@
                 </th>
                 <ng-container
                   *ngIf="!calendarVariables.right.maxDate || calendarVariables.right.maxDate.isAfter(calendarVariables.right.calendar.lastDay) && (!linkedCalendars || singleDatePicker || true)">
-                  <th class="next available" (click)="clickNext(sideEnum.right)">
+                  <th>
                   </th>
                 </ng-container>
                 <ng-container
@@ -267,25 +381,28 @@
 
               <tbody>
 
-              <tr *ngFor="let row of calendarVariables.right.calRows"
-                  [class]="calendarVariables.right.classes[row].classList">
-                <td class="week" *ngIf="showWeekNumbers">
-                  <span>{{calendarVariables.right.calendar[row][0].week()}}</span>
-                </td>
+              <ng-container *ngFor="let row of calendarVariables.right.calRows">
+                <tr *ngIf="row<5"
+                    [class]="calendarVariables.right.classes[row].classList">
+                  <td class="week" *ngIf="showWeekNumbers">
+                    <span>{{calendarVariables.right.calendar[row][0].week()}}</span>
+                  </td>
 
-                <td class="week" *ngIf="showISOWeekNumbers">
-                  <span>{{calendarVariables.right.calendar[row][0].isoWeek()}}</span>
-                </td>
+                  <td class="week" *ngIf="showISOWeekNumbers">
+                    <span>{{calendarVariables.right.calendar[row][0].isoWeek()}}</span>
+                  </td>
 
-                <td *ngFor="let col of calendarVariables.right.calCols"
-                    [class]="calendarVariables.right.classes[row][col]"
-                    (mouseenter)="hoveredDate = calendarVariables.right.calendar[row][col]"
-                    [ngClass]="{'in-range-hovered': calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)}"
-                    (click)="clickDate($event, sideEnum.right, row, col)">
-                  <span>{{calendarVariables.right.calendar[row][col].date()}}</span>
-                </td>
+                  <td *ngFor="let col of calendarVariables.right.calCols"
+                      [class]="calendarVariables.right.classes[row][col]"
+                      (mouseenter)="hoveredDate = calendarVariables.right.calendar[row][col]"
+                      [ngClass]="{'in-range-hovered': calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)}"
+                      (click)="clickDate($event, sideEnum.right, row, col)">
+                  <span
+                    *ngIf="!(calendarVariables.right.classes[row][col].indexOf('off')>-1)">{{calendarVariables.right.calendar[row][col].date()}}</span>
+                  </td>
 
-              </tr>
+                </tr>
+              </ng-container>
               </tbody>
             </table>
           </div>
