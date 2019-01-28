@@ -108,7 +108,7 @@ export class DaterangepickerComponent implements OnInit {
   @Input()
   showISOWeekNumbers: Boolean = false;
   @Input()
-  linkedCalendars: Boolean = false;
+  linkedCalendars: Boolean = true;
   @Input()
   autoUpdateInput: Boolean = true;
   @Input()
@@ -189,11 +189,17 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   get startDateString(): string {
-    return this.startDate.format(this.locale.format);
+    if (this.startDate) {
+      return this.startDate.format(this.locale.format);
+    }
+    return '';
   }
 
   get endDateString(): string {
-    return this.endDate.format(this.locale.format);
+    if (this.endDate) {
+      return this.endDate.format(this.locale.format);
+    }
+    return '';
   }
 
   ngOnInit() {
@@ -914,7 +920,46 @@ export class DaterangepickerComponent implements OnInit {
     this.updateCalendars();
   }
 
+  clickNextYear(side: SideEnum) {
+    if (side === SideEnum.left) {
+      this.leftCalendar.month.add(1, 'year');
+    } else {
+      this.rightCalendar.month.add(1, 'year');
+      if (this.linkedCalendars) {
+        this.leftCalendar.month.add(1, 'year');
+      }
+    }
+    this.updateCalendars();
+  }
+
+  /**
+   * Click on previous month
+   * @param side left or right calendar
+   */
+  clickPrevYear(side: SideEnum) {
+    if (side === SideEnum.left) {
+      this.leftCalendar.month.subtract(1, 'year');
+      if (this.linkedCalendars) {
+        this.rightCalendar.month.subtract(1, 'year');
+      }
+    } else {
+      this.rightCalendar.month.subtract(1, 'year');
+    }
+    this.updateCalendars();
+  }
+
+  setMonth(year: number, month: number) {
+    this.leftCalendar.month = moment({y: year, M: month, d: 1});
+    if (this.linkedCalendars) {
+      this.rightCalendar.month = moment({y: year, M: month, d: 1}).add(1, 'month');
+    }
+    this.updateCalendars();
+    this.showMonthPicker = false;
+    // this.s
+  }
+
   mouseUp(e: MouseWheelEvent) {
+    // debugger;
     if (e.deltaY < 0) {
       if (this.singleDatePicker) {
         if ((!this.calendarVariables.left.maxDate ||
@@ -951,6 +996,44 @@ export class DaterangepickerComponent implements OnInit {
     return false;
   }
 
+  mouseUpYear(e: MouseWheelEvent) {
+    if (e.deltaY < 0) {
+      if (this.singleDatePicker) {
+        if ((!this.calendarVariables.left.maxDate ||
+          this.calendarVariables.left.maxDate.isAfter(this.calendarVariables.left.calendar.lastDay)) &&
+          (!this.linkedCalendars || this.singleDatePicker)) {
+          this.clickNextYear(SideEnum.left);
+        }
+      } else {
+        if (!this.calendarVariables.right.maxDate ||
+          this.calendarVariables.right.maxDate.isAfter(this.calendarVariables.right.calendar.lastDay)
+          && (!this.linkedCalendars || this.singleDatePicker || true)) {
+          this.clickNextYear(SideEnum.right);
+        }
+      }
+    }
+    if (e.deltaY > 0) {
+      if (this.singleDatePicker) {
+        if (!this.calendarVariables.left.minDate ||
+          this.calendarVariables.left.minDate.isBefore(this.calendarVariables.left.calendar.firstDay) &&
+          (!this.linkedCalendars || true)) {
+          this.clickPrevYear(SideEnum.left);
+        }
+        // this.clickNext(SideEnum.left);
+      } else {
+        if (!this.calendarVariables.left.minDate ||
+          this.calendarVariables.left.minDate.isBefore(this.calendarVariables.left.calendar.firstDay) &&
+          (!this.linkedCalendars || true)) {
+          this.clickPrevYear(SideEnum.left);
+        }
+      }
+    }
+
+        e.stopPropagation();
+    e.stopImmediatePropagation();
+    return false;
+  }
+
   uptoToday(e: Event, startFrom: number, days: number) {
     const dates = [moment().subtract(days, 'days'), moment().subtract(startFrom, 'days')];
     this.startDate = dates[0].clone();
@@ -980,7 +1063,9 @@ export class DaterangepickerComponent implements OnInit {
     if (this.rangesArray.length) {
       this.chosenRange = this.locale.customRangeLabel;
     }
-
+    if (!(this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
+      return;
+    }
     let date = side === SideEnum.left ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
 
     if (this.endDate || date.isBefore(this.startDate, 'day')) { // picking start
@@ -1165,6 +1250,12 @@ export class DaterangepickerComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  public mouseEnter(row, col, side) {
+    if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
+      this.hoveredDate = this.calendarVariables[side].calendar[row][col];
+    }
   }
 
   /**

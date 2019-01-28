@@ -121,62 +121,119 @@
 
           </div>
 
-          <div class="d-container" *ngIf="showMonthPicker">
+          <div class="d-container" *ngIf="showMonthPicker" (mousewheel)="mouseUpYear($event)">
             <div>
               <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 9px 0;;">
-                jan 2019</h2>
+                {{ calendarVariables?.left?.calendar[1][1].format(" YYYY")}}</h2>
               <div class="dropdown-containt">
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),0)">Jan
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),1)">Feb
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),2)">Mar
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),3)">Apr
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),4)">May
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),5)">June
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),6)">July
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),7)">Aug
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),8)">Sept
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),9)">Oct
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),10)">Nov
+                </div>
+                <div class="d-month" (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().year(),11)">Dec
+                </div>
               </div>
             </div>
             <div>
               <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 9px 0;;">
-                jan 2019</h2>
+                {{ calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').format(" YYYY")}}</h2>
               <div class="dropdown-containt">
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),0)">Jan
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),1)">Feb
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),2)">Mar
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),3)">Apr
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),4)">May
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),5)">June
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),6)">July
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),7)">Aug
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),8)">Sept
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),9)">Oct
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),10)">Nov
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(1, 'year').year(),11)">Dec
+                </div>
               </div>
             </div>
             <div>
               <h2 style="position: relative;padding-left: 24px;font-size: 13px;color: rgba(0,0,0,.54);margin: 16px 0;;">
-                jan 2019</h2>
+                {{ calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').format(" YYYY")}}</h2>
               <div class="dropdown-containt">
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-                <div class="d-month">jan</div>
-
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),00)">Jan
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),01)">Feb
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),02)">Mar
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),03)">Apr
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),04)">May
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),05)">June
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),06)">July
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),07)">Aug
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),08)">Sept
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),09)">Oct
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),10)">Nov
+                </div>
+                <div class="d-month"
+                     (click)="setMonth(calendarVariables?.left?.calendar[1][1].clone().add(2, 'year').year(),11)">Dec
+                </div>
               </div>
             </div>
           </div>
@@ -274,14 +331,25 @@
                   </td>
 
                   <!-- cal -->
+                  <!--<td *ngFor="let col of calendarVariables.left.calCols"-->
+                  <!--[class]="calendarVariables.left.classes[row][col]"-->
+                  <!--(click)="clickDate($event, sideEnum.left, row, col)"-->
+                  <!--(mouseenter)="hoveredDate = calendarVariables.left.calendar[row][col]"-->
+                  <!--[ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">-->
+                  <!--<span-->
+                  <!--*ngIf="!(calendarVariables.left.classes[row][col].indexOf('off')>-1)">{{calendarVariables.left.calendar[row][col].date()}}</span>-->
+                  <!--</td>-->
+
                   <td *ngFor="let col of calendarVariables.left.calCols"
                       [class]="calendarVariables.left.classes[row][col]"
-                      (click)="clickDate($event, sideEnum.left, row, col)"
-                      (mouseenter)="hoveredDate = calendarVariables.left.calendar[row][col]"
-                      [ngClass]="{'in-range-hovered': calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)}">
-                    <span
-                      *ngIf="!(calendarVariables.left.classes[row][col].indexOf('off')>-1)">{{calendarVariables.left.calendar[row][col].date()}}</span>
+                      [style.backgroundColor]="!(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())?'white':'inherit'"
+                      (mouseenter)="mouseEnter(row,col,sideEnum.left)"
+                      [ngClass]="{'in-range-hovered': (calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate) && (calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month()))}"
+                      (click)="clickDate($event, sideEnum.left, row, col)">
+                  <span
+                    *ngIf="(calendarVariables.left.calendar[1][1].month() ==calendarVariables.left.calendar[row][col].month())">{{calendarVariables.left.calendar[row][col].date()}}</span>
                   </td>
+
 
                 </tr>
               </ng-container>
@@ -394,11 +462,12 @@
 
                   <td *ngFor="let col of calendarVariables.right.calCols"
                       [class]="calendarVariables.right.classes[row][col]"
-                      (mouseenter)="hoveredDate = calendarVariables.right.calendar[row][col]"
-                      [ngClass]="{'in-range-hovered': calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)}"
+                      [style.backgroundColor]="!(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())?'white':'inherit'"
+                      (mouseenter)="mouseEnter(row,col,sideEnum.right)"
+                      [ngClass]="{'in-range-hovered': (calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)&&(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month()))}"
                       (click)="clickDate($event, sideEnum.right, row, col)">
                   <span
-                    *ngIf="!(calendarVariables.right.classes[row][col].indexOf('off')>-1)">{{calendarVariables.right.calendar[row][col].date()}}</span>
+                    *ngIf="(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())">{{calendarVariables.right.calendar[row][col].date()}}</span>
                   </td>
 
                 </tr>
