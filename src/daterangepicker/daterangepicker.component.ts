@@ -65,6 +65,11 @@ export class MomthVariable {
   yearArrays: number[];
 }
 
+export enum ActiveDateEnum {
+  Start,
+  End
+}
+
 export class CalendarVariables {
   left: CalendarData;
   right: CalendarData;
@@ -89,10 +94,15 @@ export class DaterangepickerComponent implements OnInit {
   applyBtn: { disabled: boolean } = {disabled: false};
   startDate = moment().startOf('day');
   endDate = moment().endOf('day');
+  ActiveDate: ActiveDateEnum = ActiveDateEnum.Start;
+  @Input()
+  ActiveSelectedDateClass = 'activeSelectedDate';
   dateLimit = null;
   // used in template for compile time support of enum values.
   sideEnum = SideEnum;
   hoveredDate: any;
+  @ViewChild('startDateElement') startDateElement: ElementRef;
+  @ViewChild('endDateElement') endDateElement: ElementRef;
   @Input()
   minDate: _moment.Moment = moment().subtract(10, 'years');
   @Input()
@@ -203,6 +213,7 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   ngOnInit() {
+    debugger;
     this.emptyWeekRowClass = 'hideMe';
     if (this.locale.firstDay !== 0) {
       let iterator = this.locale.firstDay;
@@ -693,6 +704,7 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   remove() {
+    this.ActiveDate = ActiveDateEnum.Start;
     this.isShown = false;
   }
 
@@ -1029,7 +1041,7 @@ export class DaterangepickerComponent implements OnInit {
       }
     }
 
-        e.stopPropagation();
+    e.stopPropagation();
     e.stopImmediatePropagation();
     return false;
   }
@@ -1113,6 +1125,7 @@ export class DaterangepickerComponent implements OnInit {
     this.chosenRange = label;
     if (label === this.locale.customRangeLabel) {
       // this.chosenLabel = label;
+      debugger;
       this.isShown = true; // show calendars
       this.showCalInRanges = true;
     } else {
@@ -1132,6 +1145,7 @@ export class DaterangepickerComponent implements OnInit {
       }
 
       if (!this.alwaysShowCalendars) {
+        this.ActiveDate = ActiveDateEnum.Start;
         this.isShown = false; // hide calendars
       }
       this.rangeClicked.emit({label: label, dates: dates});
@@ -1153,6 +1167,11 @@ export class DaterangepickerComponent implements OnInit {
     this._old.start = this.startDate.clone();
     this._old.end = this.endDate.clone();
     this.isShown = true;
+    if (this.ActiveDate === ActiveDateEnum.End) {
+      this.endDateElement.nativeElement.focus();
+    } else {
+      this.startDateElement.nativeElement.focus();
+    }
     this.updateView();
   }
 
@@ -1174,10 +1193,12 @@ export class DaterangepickerComponent implements OnInit {
     if (!this.startDate.isSame(this._old.start) || !this.endDate.isSame(this._old.end)) {
       // this.callback(this.startDate, this.endDate, this.chosenLabel);
     }
+    this.ActiveDate = ActiveDateEnum.Start;
 
     // if picker is attached to a text input, update it
     this.updateElement();
     this.isShown = false;
+
     this._ref.detectChanges();
 
   }
@@ -1336,11 +1357,21 @@ export class DaterangepickerComponent implements OnInit {
         }
         // highlight the currently selected start date
         if (this.startDate && calendar[row][col].format('YYYY-MM-DD') === this.startDate.format('YYYY-MM-DD')) {
-          classes.push('active', 'start-date');
+          if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
+            if ((this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
+              classes.push('active', 'start-date-reset');
+            }
+            classes.push('active', 'start-date');
+          }
+
         }
         // highlight the currently selected end date
         if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') === this.endDate.format('YYYY-MM-DD')) {
-          classes.push('active', 'end-date');
+          if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
+            if (!(this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
+              classes.push('active', 'end-date');
+            }
+          }
         }
         // highlight dates in-between the selected dates
         if (this.endDate != null && calendar[row][col] > this.startDate && calendar[row][col] < this.endDate) {

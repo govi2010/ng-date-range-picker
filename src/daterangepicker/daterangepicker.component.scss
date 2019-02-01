@@ -40,7 +40,7 @@ $md-drppicker-cell-width: $md-drppicker-cell-size !default;
 $md-drppicker-cell-height: $md-drppicker-cell-size !default;
 
 $md-drppicker-cell-border-radius: $md-drppicker-calendar-border-radius !default;
-$md-drppicker-cell-border-size: 1px !default;
+$md-drppicker-cell-border-size: 0px !default;
 
 $md-drppicker-control-height: 30px !default;
 $md-drppicker-control-line-height: $md-drppicker-control-height !default;
@@ -241,8 +241,8 @@ $input-height: 3rem !default;
   table {
     width: 100%;
     margin: 0;
-    border-collapse: unset !important;
-    border-spacing: 4px !important;
+    //border-collapse: unset !important;
+    //border-spacing: 4px !important;
   }
 
   th {
@@ -361,6 +361,40 @@ $input-height: 3rem !default;
 
     }
 
+    &.in-range.end-date::before {
+      content: "";
+      background-color: #c6dafc;
+      width: 50%;
+      height: 100%;
+      left: 0px;
+      top: -1px;
+      position: absolute;
+      display: inline-block;
+
+    }
+
+    &.start-date::before {
+      content: "";
+      background-color: #c6dafc;
+      width: 50%;
+      height: 100%;
+      left: 50%;
+      top: -1px;
+      position: absolute;
+      display: inline-block;
+    }
+
+    &.start-date.start-date-reset::before {
+      content: "";
+      background-color: unset;
+      width: 100%;
+      height: 100%;
+      left: 50%;
+      top: -1px;
+      position: absolute;
+      display: inline-block;
+    }
+
     //&.in-range::after {
     //  content: "";
     //  /* background-color: #c6dafc; */
@@ -382,7 +416,7 @@ $input-height: 3rem !default;
     //  border: 1px solid;
     //}
     &.in-range-hovered {
-      border-bottom: 1px dashed gray;
+      border-bottom: 1px dashed gray !important;
       border-top: 1px dashed gray !important;
       border-left: 0;
       border-right: 0;
@@ -988,4 +1022,9 @@ td span {
 
 .hideMe {
   display: none;
+}
+
+.activeSelectedDate {
+  border-bottom: 1px solid #26a69a !important;
+  box-shadow: 0 1px 0 0 #26a69a !important;
 }

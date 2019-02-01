@@ -62,15 +62,19 @@
       <div style="display: flex ;flex-direction: column;" (mouseout)="hoveredDate = null">
         <div>
           <div style="display: flex;justify-content: space-around;padding-top: 10px">
-            <input matInput placeholder="start date" mask="d0/m0/0000" [dropSpecialCharacters]="true"
+            <input matInput placeholder="start date" mask="d0/m0/0000" [dropSpecialCharacters]="true" #startDateElement
                    [value]="startDateString" (change)="setStartDate($event.target.value)"
-                   style="width: 100px;height:30px;font-size: 12px;">
+                   (click)="ActiveDate =0"
+                   style="width: 100px;height:30px;font-size: 12px;"
+                   [class]="ActiveDate ===0 ?ActiveSelectedDateClass :''">
             <span style="display: flex;align-items: flex-start">
               _
             </span>
-            <input matInput placeholder="end date" mask="d0/m0/0000" [dropSpecialCharacters]="true"
+            <input matInput placeholder="end date" mask="d0/m0/0000" [dropSpecialCharacters]="true" #endDateElement
                    [value]="endDateString" (change)="setEndDate($event.target.value)"
-                   style="width: 100px;height: 30px;font-size: 12px;">
+                   (click)="ActiveDate =1"
+                   style="width: 100px;height: 30px;font-size: 12px;"
+                   [class]="ActiveDate ===1 ?ActiveSelectedDateClass :''">
           </div>
           <div style="display: flex;justify-content: space-between;padding:10px  12px">
             <div>
@@ -381,7 +385,7 @@
             <select *ngIf="!timePicker24Hour" class="ampmselect" [(ngModel)]="timepickerVariables.left.ampmModel"
                     (ngModelChange)="timeChanged($event, sideEnum.left)">
               <option value="AM" [disabled]="timepickerVariables.left.amDisabled">AM</option>
-              <option value="PM" [disabled]="timepickerVariables.left.pmDisabled">PM</option>
+              <option value="PM"  [disabled]="timepickerVariables.left.pmDisabled">PM</option>
             </select>
           </div>
         </div>
