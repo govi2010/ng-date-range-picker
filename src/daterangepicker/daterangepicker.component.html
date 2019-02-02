@@ -348,7 +348,12 @@
                       [class]="calendarVariables.left.classes[row][col]"
                       [style.backgroundColor]="!(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())?'white':'inherit'"
                       (mouseenter)="mouseEnter(row,col,sideEnum.left)"
-                      [ngClass]="{'in-range-hovered': (calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate) && (calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month()))}"
+                      [ngClass]="{'in-range-hovered': (calendarVariables.left.calendar[row][col].isBetween(startDate, hoveredDate)
+                      && (calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())),
+                      'activatedDate': (calendarVariables.left.calendar[row][col].format('YYYY-MM-DD')===startDate.format('YYYY-MM-DD')
+                      || calendarVariables.left.calendar[row][col].format('YYYY-MM-DD')===endDate.format('YYYY-MM-DD')) &&
+                      ((calendarVariables.left.calendar[row][col].format('YYYY-MM-DD')===startDate.format('YYYY-MM-DD') && ActiveDate === 1) ||
+                      (calendarVariables.left.calendar[row][col].format('YYYY-MM-DD')===endDate.format('YYYY-MM-DD') && ActiveDate === 0))}"
                       (click)="clickDate($event, sideEnum.left, row, col)">
                   <span
                     *ngIf="(calendarVariables.left.calendar[1][1].month() ==calendarVariables.left.calendar[row][col].month())">{{calendarVariables.left.calendar[row][col].date()}}</span>
@@ -385,7 +390,7 @@
             <select *ngIf="!timePicker24Hour" class="ampmselect" [(ngModel)]="timepickerVariables.left.ampmModel"
                     (ngModelChange)="timeChanged($event, sideEnum.left)">
               <option value="AM" [disabled]="timepickerVariables.left.amDisabled">AM</option>
-              <option value="PM"  [disabled]="timepickerVariables.left.pmDisabled">PM</option>
+              <option value="PM" [disabled]="timepickerVariables.left.pmDisabled">PM</option>
             </select>
           </div>
         </div>
@@ -468,7 +473,12 @@
                       [class]="calendarVariables.right.classes[row][col]"
                       [style.backgroundColor]="!(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())?'white':'inherit'"
                       (mouseenter)="mouseEnter(row,col,sideEnum.right)"
-                      [ngClass]="{'in-range-hovered': (calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)&&(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month()))}"
+                      [ngClass]="{'in-range-hovered': (calendarVariables.right.calendar[row][col].isBetween(startDate, hoveredDate)&&
+                      (calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())),
+                      'activatedDate': (calendarVariables.right.calendar[row][col].format('YYYY-MM-DD')===startDate.format('YYYY-MM-DD')
+                      || calendarVariables.right.calendar[row][col].format('YYYY-MM-DD')===endDate.format('YYYY-MM-DD')) &&
+                      ((calendarVariables.right.calendar[row][col].format('YYYY-MM-DD')===startDate.format('YYYY-MM-DD') && ActiveDate === 1) ||
+                      (calendarVariables.right.calendar[row][col].format('YYYY-MM-DD')===endDate.format('YYYY-MM-DD') && ActiveDate === 0))}"
                       (click)="clickDate($event, sideEnum.right, row, col)">
                   <span
                     *ngIf="(calendarVariables.right.calendar[1][1].month() ==calendarVariables.right.calendar[row][col].month())">{{calendarVariables.right.calendar[row][col].date()}}</span>

@@ -213,7 +213,6 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger;
     this.emptyWeekRowClass = 'hideMe';
     if (this.locale.firstDay !== 0) {
       let iterator = this.locale.firstDay;
@@ -1080,21 +1079,80 @@ export class DaterangepickerComponent implements OnInit {
     }
     let date = side === SideEnum.left ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
 
+    if (this.ActiveDate === ActiveDateEnum.Start) {
+      if (this.startDate) {
+
+        if (!this.endDate) {
+          if (date.isAfter(this.startDate, 'day')) {
+            this.ActiveDate = ActiveDateEnum.End;
+            this.setEndDate(date.clone());
+          }
+        } else {
+          if (date.isAfter(this.endDate, 'day')) {
+            this.ActiveDate = ActiveDateEnum.End;
+            this.setStartDate(date.clone());
+            this.setEndDate(date.clone());
+          }
+
+          if (date.isBefore(this.startDate, 'day')) {
+            this.setStartDate(date.clone());
+          }
+        }
+
+        if (date.isBefore(this.startDate, 'day')) {
+          this.setStartDate(date.clone());
+        }
+
+      } else {
+
+      }
+
+    } else {
+      if (this.endDate) {
+
+        if (this.startDate) {
+
+          if (date.isBefore(this.startDate, 'day')) {
+            this.setStartDate(date.clone());
+            this.setEndDate(date.clone());
+            this.ActiveDate = ActiveDateEnum.End;
+            return;
+          }
+
+          if (date.isAfter(this.endDate, 'day')) {
+            this.setEndDate(date.clone());
+          }
+        }
+
+        if (this.endDate.isBefore(date, 'day')) {
+          this.setEndDate(date.clone());
+        }
+
+        if (this.endDate.isAfter(date, 'day')) {
+          this.setEndDate(date.clone());
+        }
+
+        if (date.isBefore(this.startDate, 'day')) {
+          this.endDate = null;
+          this.ActiveDate = ActiveDateEnum.Start;
+          this.setStartDate(date.clone());
+        }
+      } else {
+        this.setEndDate(date.clone());
+      }
+    }
+
     if (this.endDate || date.isBefore(this.startDate, 'day')) { // picking start
       if (this.timePicker) {
         date = this._getDateWithTime(date, SideEnum.left);
       }
-      this.endDate = null;
-      this.setStartDate(date.clone());
     } else if (!this.endDate && date.isBefore(this.startDate)) {
       // special case: clicking the same date for start/end,
       // but the time of the end date is before the start date
-      this.setEndDate(this.startDate.clone());
     } else { // picking end
       if (this.timePicker) {
         date = this._getDateWithTime(date, SideEnum.right);
       }
-      this.setEndDate(date.clone());
       if (this.autoApply) {
         this.calculateChosenLabel();
         this.clickApply();
@@ -1125,7 +1183,6 @@ export class DaterangepickerComponent implements OnInit {
     this.chosenRange = label;
     if (label === this.locale.customRangeLabel) {
       // this.chosenLabel = label;
-      debugger;
       this.isShown = true; // show calendars
       this.showCalInRanges = true;
     } else {
@@ -1359,7 +1416,10 @@ export class DaterangepickerComponent implements OnInit {
         if (this.startDate && calendar[row][col].format('YYYY-MM-DD') === this.startDate.format('YYYY-MM-DD')) {
           if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
             if ((this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
-              classes.push('active', 'start-date-reset');
+              classes.push('start-date-reset');
+            }
+            if (this.ActiveDate !== ActiveDateEnum.Start) {
+              // classes.push('activatedDate');
             }
             classes.push('active', 'start-date');
           }
@@ -1369,6 +1429,9 @@ export class DaterangepickerComponent implements OnInit {
         if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') === this.endDate.format('YYYY-MM-DD')) {
           if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
             if (!(this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
+              if (this.ActiveDate !== ActiveDateEnum.End) {
+                // classes.push('activatedDate');
+              }
               classes.push('active', 'end-date');
             }
           }
