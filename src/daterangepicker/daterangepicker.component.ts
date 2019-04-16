@@ -273,11 +273,11 @@ export class DaterangepickerComponent implements OnInit {
           || (maxDate && start.isAfter(maxDate, this.timePicker ? 'minute' : 'day'))) {
           continue;
         }
-        const elem = document.createElement('textarea');
-        elem.innerHTML = range;
-        const rangeHtml = elem.value;
+        // const elem = document.createElement('textarea');
+        // elem.innerHTML = range;
+        // const rangeHtml = elem.value;
 
-        this.ranges[rangeHtml] = [start, end];
+        this.ranges[range] = [start, end];
       }
 
       // if (this.showCustomRangeLabel) {
@@ -703,7 +703,7 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   remove() {
-    this.ActiveDate = ActiveDateEnum.Start;
+    this.setActiveDate(ActiveDateEnum.Start);
     this.isShown = false;
   }
 
@@ -1084,18 +1084,37 @@ export class DaterangepickerComponent implements OnInit {
 
         if (!this.endDate) {
           if (date.isAfter(this.startDate, 'day')) {
-            this.ActiveDate = ActiveDateEnum.End;
+            this.setActiveDate(ActiveDateEnum.End);
             this.setEndDate(date.clone());
           }
         } else {
-          if (date.isAfter(this.endDate, 'day')) {
-            this.ActiveDate = ActiveDateEnum.End;
-            this.setStartDate(date.clone());
-            this.setEndDate(date.clone());
-          }
 
-          if (date.isBefore(this.startDate, 'day')) {
-            this.setStartDate(date.clone());
+          // check if start date and end date are set
+          if (this.startDate.isSame(this.endDate, 'day')) {
+            if (date.isAfter(this.endDate, 'day')) {
+              this.setActiveDate(ActiveDateEnum.End);
+              this.setEndDate(date.clone());
+            }
+
+            if (date.isBefore(this.startDate, 'day')) {
+              this.setStartDate(date.clone());
+              this.setActiveDate(ActiveDateEnum.End);
+            }
+          } else {
+            if (date.isAfter(this.endDate, 'day')) {
+              this.setActiveDate(ActiveDateEnum.End);
+              this.setStartDate(date.clone());
+              this.setEndDate(date.clone());
+            }
+
+            if (date.isBefore(this.startDate, 'day')) {
+              this.setStartDate(date.clone());
+            }
+
+            if (date.isAfter(this.startDate, 'day') && date.isBefore(this.endDate, 'day')) {
+              this.setEndDate(date.clone());
+              this.setActiveDate(ActiveDateEnum.End);
+            }
           }
         }
 
@@ -1103,10 +1122,7 @@ export class DaterangepickerComponent implements OnInit {
           this.setStartDate(date.clone());
         }
 
-      } else {
-
       }
-
     } else {
       if (this.endDate) {
 
@@ -1115,12 +1131,13 @@ export class DaterangepickerComponent implements OnInit {
           if (date.isBefore(this.startDate, 'day')) {
             this.setStartDate(date.clone());
             this.setEndDate(date.clone());
-            this.ActiveDate = ActiveDateEnum.End;
+            this.setActiveDate(ActiveDateEnum.End);
             return;
           }
 
           if (date.isAfter(this.endDate, 'day')) {
             this.setEndDate(date.clone());
+            this.setActiveDate(ActiveDateEnum.Start);
           }
         }
 
@@ -1130,11 +1147,12 @@ export class DaterangepickerComponent implements OnInit {
 
         if (this.endDate.isAfter(date, 'day')) {
           this.setEndDate(date.clone());
+          this.setActiveDate(ActiveDateEnum.Start);
         }
 
         if (date.isBefore(this.startDate, 'day')) {
           this.endDate = null;
-          this.ActiveDate = ActiveDateEnum.Start;
+          this.setActiveDate(ActiveDateEnum.Start);
           this.setStartDate(date.clone());
         }
       } else {
@@ -1174,6 +1192,10 @@ export class DaterangepickerComponent implements OnInit {
 
   }
 
+  setActiveDate(selectedDate: ActiveDateEnum) {
+    this.ActiveDate = selectedDate;
+  }
+
   /**
    *  Click on the custom range
    * @param e: Event
@@ -1202,7 +1224,7 @@ export class DaterangepickerComponent implements OnInit {
       }
 
       if (!this.alwaysShowCalendars) {
-        this.ActiveDate = ActiveDateEnum.Start;
+        this.setActiveDate(ActiveDateEnum.Start);
         this.isShown = false; // hide calendars
       }
       this.rangeClicked.emit({label: label, dates: dates});
@@ -1250,7 +1272,7 @@ export class DaterangepickerComponent implements OnInit {
     if (!this.startDate.isSame(this._old.start) || !this.endDate.isSame(this._old.end)) {
       // this.callback(this.startDate, this.endDate, this.chosenLabel);
     }
-    this.ActiveDate = ActiveDateEnum.Start;
+    this.setActiveDate(ActiveDateEnum.Start);
 
     // if picker is attached to a text input, update it
     this.updateElement();
@@ -1415,7 +1437,7 @@ export class DaterangepickerComponent implements OnInit {
         // highlight the currently selected start date
         if (this.startDate && calendar[row][col].format('YYYY-MM-DD') === this.startDate.format('YYYY-MM-DD')) {
           if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
-            if ((this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
+            if ((this.endDate && this.startDate && this.endDate.isSame(this.startDate, 'day'))) {
               classes.push('start-date-reset');
             }
             if (this.ActiveDate !== ActiveDateEnum.Start) {
@@ -1428,7 +1450,7 @@ export class DaterangepickerComponent implements OnInit {
         // highlight the currently selected end date
         if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') === this.endDate.format('YYYY-MM-DD')) {
           if ((this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
-            if (!(this.endDate && this.startDate && this.endDate.day() === this.startDate.day())) {
+            if (!(this.endDate && this.startDate && this.endDate.isSame(this.startDate, 'day'))) {
               if (this.ActiveDate !== ActiveDateEnum.End) {
                 // classes.push('activatedDate');
               }
