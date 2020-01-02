@@ -985,15 +985,13 @@ export class DaterangepickerComponent implements OnInit {
     if (e.deltaY > 0) {
       if (this.singleDatePicker) {
         if (!this.calendarVariables.start.minDate ||
-          this.calendarVariables.start.minDate.isBefore(this.calendarVariables.start.calendar.firstDay) &&
-          (!this.linkedCalendars)) {
+          this.calendarVariables.start.minDate.isBefore(this.calendarVariables.start.calendar.firstDay)) {
           this.goToPrevMonth();
         }
         // this.goToNextMonth(DateType.start);
       } else {
         if (!this.calendarVariables.start.minDate ||
-          this.calendarVariables.start.minDate.isBefore(this.calendarVariables.start.calendar.firstDay) &&
-          (!this.linkedCalendars)) {
+          this.calendarVariables.start.minDate.isBefore(this.calendarVariables.start.calendar.firstDay)) {
           this.goToPrevMonth();
         }
       }
