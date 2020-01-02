@@ -135,9 +135,13 @@
             <!-- navigate to previous and next month buttons -->
             <div style="width: 100px;display: flex;justify-content: space-around">
 
-              <span (click)="goToPrevMonth()" class="prev available"></span>
+              <button (click)="goToPrevMonth()"
+                      [disabled]="goToPreviousMonthDisabled"
+                      class="prev available"></button>
 
-              <span class="next available" (click)="goToNextMonth()"></span>
+              <button class="next available"
+                      [disabled]="goToNextMonthDisabled"
+                      (click)="goToNextMonth()"></button>
 
             </div>
             <!-- navigate to previous and next month buttons -->
@@ -351,8 +355,7 @@
               <tbody class="drp-animate">
 
               <ng-container *ngFor="let row of calendarVariables.start.calRows">
-                <tr *ngIf="row<5"
-                    [class]="calendarVariables.start.classes[row].classList">
+                <tr [class]="calendarVariables.start.classes[row].classList">
 
                   <!-- add week number -->
                   <td class="week" *ngIf="showWeekNumbers">
@@ -495,8 +498,7 @@
               <tbody>
 
               <ng-container *ngFor="let row of calendarVariables.end.calRows">
-                <tr *ngIf="row<5"
-                    [class]="calendarVariables.end.classes[row].classList">
+                <tr [class]="calendarVariables.end.classes[row].classList">
                   <td class="week" *ngIf="showWeekNumbers">
                     <span>{{calendarVariables.end.calendar[row][0].week()}}</span>
                   </td>

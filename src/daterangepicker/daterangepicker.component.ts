@@ -174,6 +174,10 @@ export class DaterangepickerComponent implements OnInit {
   @Output('datesUpdated') datesUpdated: EventEmitter<Object>;
   @ViewChild('pickerContainer') pickerContainer: ElementRef;
   showMonthPicker = false;
+
+  public goToPreviousMonthDisabled: boolean = false;
+  public goToNextMonthDisabled: boolean = false;
+
   private _old: { start: any, end: any } = {start: null, end: null};
 
   constructor(
@@ -236,16 +240,39 @@ export class DaterangepickerComponent implements OnInit {
     this.renderRanges();
   }
 
+  /**
+   * check whether go to previous and go to next month are allowed
+   */
+  private checkNavigateMonthsHolders() {
+    // for single date picker
+    if (this.singleDatePicker) {
+      this.goToPreviousMonthDisabled = this.startCalendar.month.startOf('d').isBefore(this.minDate);
+      this.goToNextMonthDisabled = this.startCalendar.month.startOf('d').isBefore(this.maxDate);
+    } else {
+      // for date range picker
+
+      // check if start calender month start day is before or same as min date then don't allow to go to previous month
+      this.goToPreviousMonthDisabled = moment([this.startCalendar.month.year(), this.startCalendar.month.month(), 1]).startOf('M')
+        .isSameOrBefore(this.minDate);
+
+      // check if end calender month end day is after or same as max date then don't allow to go to next month
+      this.goToNextMonthDisabled = moment([this.endCalendar.month.year(), this.endCalendar.month.month(), 1]).endOf('M')
+        .isSameOrAfter(this.maxDate);
+    }
+  }
+
   renderRanges() {
     let start, end;
     if (typeof this.ranges === 'object') {
-      for (const range in this.ranges) {
+      for (const range of this.ranges) {
+        // set range start date
         if (typeof this.ranges[range][0] === 'string') {
           start = moment(this.ranges[range][0], this.locale.format);
         } else {
           start = moment(this.ranges[range][0]);
         }
 
+        // set range end date
         if (typeof this.ranges[range][1] === 'string') {
           end = moment(this.ranges[range][1], this.locale.format);
         } else {
@@ -254,6 +281,8 @@ export class DaterangepickerComponent implements OnInit {
 
         // If the start or end date exceed those allowed by the minDate or maxSpan
         // options, shorten the range to the allowable period.
+
+        // if start date is before min date, replace start date with min date
         if (this.minDate && start.isBefore(this.minDate)) {
           start = this.minDate.clone();
         }
@@ -262,6 +291,8 @@ export class DaterangepickerComponent implements OnInit {
         if (this.maxSpan && maxDate && start.clone().add(this.maxSpan).isAfter(maxDate)) {
           maxDate = start.clone().add(this.maxSpan);
         }
+
+        // if end date is after max date, replace max date with max date
         if (maxDate && end.isAfter(maxDate)) {
           end = maxDate.clone();
         }
@@ -283,14 +314,21 @@ export class DaterangepickerComponent implements OnInit {
       //   this.rangesArray.push(this.locale.customRangeLabel);
       // }
 
-      for (const range in this.ranges) {
+      for (const range of this.ranges) {
         this.rangesArray.push(range);
       }
+
+      // if there's no ranges given, display calender in place of ranges list
       this.showCalInRanges = (!this.rangesArray.length) || this.alwaysShowCalendars;
+
+      // if no time picker is defined then,
+      // set start date as start of start date
+      // and end date as end of end date
       if (!this.timePicker) {
         this.startDate = this.startDate.startOf('day');
         this.endDate = this.endDate.endOf('day');
       }
+
       // can't be used together for now
       if (this.timePicker && this.autoApply) {
         this.autoApply = false;
@@ -532,6 +570,8 @@ export class DaterangepickerComponent implements OnInit {
       };
     }
     this._buildCells(calendar, side);
+
+    this.checkNavigateMonthsHolders();
   }
 
   setStartDate(startDate) {
@@ -713,7 +753,7 @@ export class DaterangepickerComponent implements OnInit {
     let customRange = true;
     let i = 0;
     if (this.rangesArray.length > 0) {
-      for (const range in this.ranges) {
+      for (const range of this.ranges) {
         if (this.timePicker) {
           const format = this.timePickerSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm';
           // ignore times when comparing dates if time picker seconds is not enabled
