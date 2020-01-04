@@ -10,7 +10,7 @@
 }" [class]="'drops-' + drops + '-' + opens">
 
   <!-- ranges container -->
-  <div class="ranges" *ngIf="rangesArray.length"
+  <div class="ranges" *ngIf="ranges.length"
        style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
 
     <div style="padding: 15px 0;border-bottom: 1px solid gainsboro;">
@@ -28,12 +28,25 @@
     <div style="flex: 1 1 auto;">
       <ul>
 
-        <li *ngFor="let range of rangesArray; let i = index" style="position: relative">
-          <button type="button"
+        <li *ngFor="let range of ranges; let i = index" style="position: relative">
+          <button type="button" class="btn-angle-down"
                   (click)="clickRange($event, range)"
                   [disabled]="disableRange(range)"
-                  [ngClass]="{'active': range === chosenRange}">{{range}}
+                  [ngClass]="{'active': range === chosenRange}">{{range.name}}
+
+            <span *ngIf="range.ranges.length" class="available prev angle-down"></span>
           </button>
+
+
+          <ul *ngIf="range.ranges.length" class="sub-ranges-cal">
+            <li *ngFor="let subRange of range.ranges">
+              <button type="button"
+                      (click)="clickRange($event, subRange)"
+                      [disabled]="disableRange(subRange)"
+                      [ngClass]="{'active': subRange === chosenRange}">{{subRange.name}}
+              </button>
+            </li>
+          </ul>
 
         </li>
       </ul>
@@ -566,7 +579,7 @@
     </div>
 
     <!-- buttons -->
-    <div class="buttons" *ngIf="!autoApply && ( !rangesArray.length || (showCalInRanges && !singleDatePicker))">
+    <div class="buttons" *ngIf="!autoApply && ( !ranges.length || (showCalInRanges && !singleDatePicker))">
 
       <div class="buttons_input">
 

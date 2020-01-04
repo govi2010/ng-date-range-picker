@@ -1029,10 +1029,31 @@ td span {
   box-shadow: 0 1px 0 0 #26a69a !important;
 }
 
-.activatedDate{
+.activatedDate {
   background-color: #c6dafc;
 }
-.activatedDate span{
+
+.activatedDate span {
   color: #000 !important;
   background-color: #c6dafc !important;
+}
+
+.btn-angle-down {
+  position: relative;
+  background-color: #ddd;
+}
+
+.angle-down {
+  position: absolute;
+  right: 5px;
+  top: 4px;
+  transform: rotate(269deg);
+}
+
+.sub-ranges-cal {
+  position: absolute;
+  background-color: #f5f5f5;
+  right: -100%;
+  top: 0;
+  z-index: 1;
 }

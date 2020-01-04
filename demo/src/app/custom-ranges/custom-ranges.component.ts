@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as moment from 'moment';
 
 @Component({
@@ -27,15 +27,19 @@ export class CustomRangesComponent implements OnInit {
       moment()
         .subtract(1, 'month')
         .endOf('month')
-    ]
+    ],
+    'This Week': [{
+      'Sun - Today': [moment(), moment()],
+      'Mon - Today': [moment(), moment()]
+    }]
   };
 
-  isInvalidDate = (m: moment.Moment) =>  {
-    return this.invalidDates.some(d => d.isSame(m, 'day') )
-  }
+  isInvalidDate = (m: moment.Moment) => {
+    return this.invalidDates.some(d => d.isSame(m, 'day'));
+  };
 
   constructor() {
-    this.maxDate = moment().add(2,  'month');
+    this.maxDate = moment().add(2, 'month');
     this.minDate = moment().subtract(3, 'days');
 
     this.alwaysShowCalendars = true;
@@ -43,12 +47,15 @@ export class CustomRangesComponent implements OnInit {
     this.showRangeLabelOnInput = true;
     this.selected = {startDate: moment().subtract(1, 'days'), endDate: moment().subtract(1, 'days')};
   }
+
   rangeClicked(range) {
     console.log('[rangeClicked] range is : ', range);
   }
+
   datesUpdated(range) {
     console.log('[datesUpdated] range is : ', range);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }

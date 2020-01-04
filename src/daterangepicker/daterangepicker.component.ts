@@ -261,62 +261,15 @@ export class DaterangepickerComponent implements OnInit {
     }
   }
 
+  /**
+   * render ranges to ui
+   * check various start and end date validation in given ranges
+   */
   renderRanges() {
-    let start, end;
+    // let start, end;
+    // let maxDate = this.maxDate;
     if (typeof this.ranges === 'object') {
-      for (const range of this.ranges) {
-        // set range start date
-        if (typeof this.ranges[range][0] === 'string') {
-          start = moment(this.ranges[range][0], this.locale.format);
-        } else {
-          start = moment(this.ranges[range][0]);
-        }
-
-        // set range end date
-        if (typeof this.ranges[range][1] === 'string') {
-          end = moment(this.ranges[range][1], this.locale.format);
-        } else {
-          end = moment(this.ranges[range][1]);
-        }
-
-        // If the start or end date exceed those allowed by the minDate or maxSpan
-        // options, shorten the range to the allowable period.
-
-        // if start date is before min date, replace start date with min date
-        if (this.minDate && start.isBefore(this.minDate)) {
-          start = this.minDate.clone();
-        }
-
-        let maxDate = this.maxDate;
-        if (this.maxSpan && maxDate && start.clone().add(this.maxSpan).isAfter(maxDate)) {
-          maxDate = start.clone().add(this.maxSpan);
-        }
-
-        // if end date is after max date, replace max date with max date
-        if (maxDate && end.isAfter(maxDate)) {
-          end = maxDate.clone();
-        }
-
-        // If the end of the range is before the minimum or the start of the range is
-        // after the maximum, don't display this range option at all.
-        if ((this.minDate && end.isBefore(this.minDate, this.timePicker ? 'minute' : 'day'))
-          || (maxDate && start.isAfter(maxDate, this.timePicker ? 'minute' : 'day'))) {
-          continue;
-        }
-        // const elem = document.createElement('textarea');
-        // elem.innerHTML = range;
-        // const rangeHtml = elem.value;
-
-        this.ranges[range] = [start, end];
-      }
-
-      // if (this.showCustomRangeLabel) {
-      //   this.rangesArray.push(this.locale.customRangeLabel);
-      // }
-
-      for (const range of this.ranges) {
-        this.rangesArray.push(range);
-      }
+      this.ranges = this.parseRangesToVm(this.ranges);
 
       // if there's no ranges given, display calender in place of ranges list
       this.showCalInRanges = (!this.rangesArray.length) || this.alwaysShowCalendars;
@@ -334,7 +287,42 @@ export class DaterangepickerComponent implements OnInit {
         this.autoApply = false;
       }
     }
+  }
 
+  private rangeValidator(ranges, range) {
+    let start, end;
+    // set range start date
+    if (typeof ranges[range][0] === 'string') {
+      start = moment(ranges[range][0], this.locale.format);
+    } else {
+      start = moment(ranges[range][0]);
+    }
+
+    // set range end date
+    if (typeof ranges[range][1] === 'string') {
+      end = moment(ranges[range][1], this.locale.format);
+    } else {
+      end = moment(ranges[range][1]);
+    }
+
+    // If the start or end date exceed those allowed by the minDate or maxSpan
+    // options, shorten the range to the allowable period.
+
+    // if start date is before min date, replace start date with min date
+    if (this.minDate && start.isBefore(this.minDate)) {
+      start = this.minDate.clone();
+    }
+
+    let maxDate = this.maxDate;
+    if (this.maxSpan && maxDate && start.clone().add(this.maxSpan).isAfter(maxDate)) {
+      maxDate = start.clone().add(this.maxSpan);
+    }
+
+    // if end date is after max date, replace max date with max date
+    if (maxDate && end.isAfter(maxDate)) {
+      end = maxDate.clone();
+    }
+    return {start, maxDate, end};
   }
 
   renderTimePicker(side: DateType) {
@@ -1353,9 +1341,6 @@ export class DaterangepickerComponent implements OnInit {
    * fit into minDate and maxDate limitations.
    */
   disableRange(range) {
-    if (range === this.locale.customRangeLabel) {
-      return false;
-    }
     const rangeMarkers = this.ranges[range];
     const areBothBefore = rangeMarkers.every(date => {
       if (!this.minDate) {
@@ -1520,5 +1505,29 @@ export class DaterangepickerComponent implements OnInit {
       }
       this.calendarVariables[side].classes[row].classList = rowClasses.join(' ');
     }
+  }
+
+  private parseRangesToVm(ranges) {
+    const parsedRanges: Array<{ name: string, value: any[], ranges: any[] }> = [];
+
+    for (const range in ranges) {
+      if (!(ranges[range][0] instanceof moment)) {
+        const subRange = this.parseRangesToVm(ranges[range][0]);
+        parsedRanges.push({
+          name: range,
+          value: [],
+          ranges: subRange
+        });
+      } else {
+        const value = this.rangeValidator(ranges, range);
+        parsedRanges.push({
+          name: range,
+          value: [value.start, value.end],
+          ranges: []
+        });
+      }
+    }
+
+    return parsedRanges;
   }
 }
