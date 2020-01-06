@@ -266,8 +266,6 @@ export class DaterangepickerComponent implements OnInit {
    * check various start and end date validation in given ranges
    */
   renderRanges() {
-    // let start, end;
-    // let maxDate = this.maxDate;
     if (typeof this.ranges === 'object') {
       this.ranges = this.parseRangesToVm(this.ranges);
 
@@ -1221,43 +1219,38 @@ export class DaterangepickerComponent implements OnInit {
   /**
    *  Click on the custom range
    * @param e: Event
-   * @param label
+   * @param ranges
+   * @param range
    */
-  clickRange(e, label) {
-    this.chosenRange = label;
-    if (label === this.locale.customRangeLabel) {
-      // this.chosenLabel = label;
-      this.isShown = true; // show calendars
-      this.showCalInRanges = true;
+  clickRange(e, ranges, range) {
+    this.chosenRange = range.name;
+    const dates = ranges.find(r => r.name === range.name);
+    this.startDate = dates.value[0].clone();
+    this.endDate = dates.value[1].clone();
+    if (this.showRangeLabelOnInput && range.name !== this.locale.customRangeLabel) {
+      this.chosenLabel = range.name;
     } else {
-      const dates = this.ranges[label];
-      this.startDate = dates[0].clone();
-      this.endDate = dates[1].clone();
-      if (this.showRangeLabelOnInput && label !== this.locale.customRangeLabel) {
-        this.chosenLabel = label;
-      } else {
-        this.calculateChosenLabel();
-      }
-      this.showCalInRanges = (!this.rangesArray.length) || this.alwaysShowCalendars;
-
-      if (!this.timePicker) {
-        this.startDate.startOf('day');
-        this.endDate.endOf('day');
-      }
-
-      if (!this.alwaysShowCalendars) {
-        this.setActiveDate(ActiveDateEnum.Start);
-        this.isShown = false; // hide calendars
-      }
-      this.rangeClicked.emit({label: label, dates: dates});
-      if (!this.keepCalendarOpeningWithRange) {
-        this.clickApply();
-      } else {
-        this.renderCalendar(DateType.start);
-        this.renderCalendar(DateType.end);
-      }
-
+      this.calculateChosenLabel();
     }
+    this.showCalInRanges = (!Object.keys(this.ranges).length) || this.alwaysShowCalendars;
+
+    if (!this.timePicker) {
+      this.startDate.startOf('day');
+      this.endDate.endOf('day');
+    }
+
+    if (!this.alwaysShowCalendars) {
+      this.setActiveDate(ActiveDateEnum.Start);
+      this.isShown = false; // hide calendars
+    }
+    this.rangeClicked.emit({label: range.name, dates: dates.value});
+    if (!this.keepCalendarOpeningWithRange) {
+      this.clickApply();
+    } else {
+      this.renderCalendar(DateType.start);
+      this.renderCalendar(DateType.end);
+    }
+
     this.updateView();
   }
 
@@ -1340,16 +1333,16 @@ export class DaterangepickerComponent implements OnInit {
    * Find out if the selected range should be disabled if it doesn't
    * fit into minDate and maxDate limitations.
    */
-  disableRange(range) {
-    const rangeMarkers = this.ranges[range];
-    const areBothBefore = rangeMarkers.every(date => {
+  disableRange(ranges, range) {
+    const rangeMarkers = ranges.find(r => r.name === range.name);
+    const areBothBefore = rangeMarkers.value.every(date => {
       if (!this.minDate) {
         return false;
       }
       return date.isBefore(this.minDate);
     });
 
-    const areBothAfter = rangeMarkers.every(date => {
+    const areBothAfter = rangeMarkers.value.every(date => {
       if (!this.maxDate) {
         return false;
       }

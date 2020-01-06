@@ -13,37 +13,26 @@
   <div class="ranges" *ngIf="ranges.length"
        style="border-right: 1px solid gainsboro;display: flex;flex-direction: column;">
 
-    <div style="padding: 15px 0;border-bottom: 1px solid gainsboro;">
-      <ul>
-        <li *ngIf="showCustomRangeLabel" style="width: 100%;display: block;">
-          <button type="button" style="width: 100%;border: none;background-color: unset;text-align: left;"
-                  (click)="clickRange($event, locale.customRangeLabel)"
-                  [disabled]="disableRange(locale.customRangeLabel)"
-                  [ngClass]="{'active': locale.customRangeLabel === chosenRange}">{{locale.customRangeLabel}}</button>
-        </li>
-      </ul>
-    </div>
-
     <!-- loop over ranges -->
     <div style="flex: 1 1 auto;">
       <ul>
 
-        <li *ngFor="let range of ranges; let i = index" style="position: relative">
+        <li *ngFor="let range of ranges; let i = index" style="position: relative" class="menu-li">
           <button type="button" class="btn-angle-down"
-                  (click)="clickRange($event, range)"
-                  [disabled]="disableRange(range)"
-                  [ngClass]="{'active': range === chosenRange}">{{range.name}}
+                  (click)="clickRange($event, ranges, range)"
+                  [disabled]="disableRange(ranges, range)"
+                  [ngClass]="{'active': range.name === chosenRange}">{{range.name}}
 
             <span *ngIf="range.ranges.length" class="available prev angle-down"></span>
           </button>
 
 
-          <ul *ngIf="range.ranges.length" class="sub-ranges-cal">
+          <ul *ngIf="range.ranges.length" class="sub-ranges-cal menu-drawer">
             <li *ngFor="let subRange of range.ranges">
               <button type="button"
-                      (click)="clickRange($event, subRange)"
-                      [disabled]="disableRange(subRange)"
-                      [ngClass]="{'active': subRange === chosenRange}">{{subRange.name}}
+                      (click)="clickRange($event, range.ranges, subRange)"
+                      [disabled]="disableRange(range.ranges, subRange)"
+                      [ngClass]="{'active': subRange.name === chosenRange}">{{subRange.name}}
               </button>
             </li>
           </ul>
