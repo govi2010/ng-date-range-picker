@@ -6,7 +6,7 @@
     'hidden': !isShown && !inline,
     'inline': inline,
     'double': !singleDatePicker && showCalInRanges,
-    'show-ranges': rangesArray.length
+    'show-ranges': ranges.length
 }" [class]="'drops-' + drops + '-' + opens">
 
   <!-- ranges container -->
@@ -19,9 +19,10 @@
 
         <li *ngFor="let range of ranges; let i = index" style="position: relative" class="menu-li">
           <button type="button" class="btn-angle-down"
-                  (click)="clickRange($event, ranges, range)"
+                  (click)="clickRange($event, range)"
+                  (dblclick)="dblClickRange($event, range)"
                   [disabled]="disableRange(ranges, range)"
-                  [ngClass]="{'active': range.name === chosenRange}">{{range.name}}
+                  [ngClass]="{'active': range.isSelected}">{{range.name}}
 
             <span *ngIf="range.ranges.length" class="available prev angle-down"></span>
           </button>
@@ -30,9 +31,10 @@
           <ul *ngIf="range.ranges.length" class="sub-ranges-cal menu-drawer">
             <li *ngFor="let subRange of range.ranges">
               <button type="button"
-                      (click)="clickRange($event, range.ranges, subRange)"
+                      (click)="clickRange($event,subRange)"
+                      (dblclick)="dblClickRange($event, subRange)"
                       [disabled]="disableRange(range.ranges, subRange)"
-                      [ngClass]="{'active': subRange.name === chosenRange}">{{subRange.name}}
+                      [ngClass]="{'active': subRange.isSelected}">{{subRange.name}}
               </button>
             </li>
           </ul>
@@ -332,17 +334,17 @@
                 <th></th>
 
                 <!-- commented because we have moved next and previous month switcher at top -->
-<!--                <ng-container-->
-<!--                  *ngIf="(!calendarVariables.start.maxDate || calendarVariables.start.maxDate.isAfter(calendarVariables.start.calendar.lastDay)) && (!linkedCalendars || singleDatePicker )">-->
-<!--                  <th class="next available" (click)="goToNextMonth()">-->
-<!--                  </th>-->
-<!--                </ng-container>-->
+                <!--                <ng-container-->
+                <!--                  *ngIf="(!calendarVariables.start.maxDate || calendarVariables.start.maxDate.isAfter(calendarVariables.start.calendar.lastDay)) && (!linkedCalendars || singleDatePicker )">-->
+                <!--                  <th class="next available" (click)="goToNextMonth()">-->
+                <!--                  </th>-->
+                <!--                </ng-container>-->
                 <!-- commented because we are always going to show go to next and previous month -->
 
-<!--                <ng-container-->
-<!--                  *ngIf="!((!calendarVariables.start.maxDate || calendarVariables.start.maxDate.isAfter(calendarVariables.start.calendar.lastDay)) && (!linkedCalendars || singleDatePicker ))">-->
-<!--                  <th></th>-->
-<!--                </ng-container>-->
+                <!--                <ng-container-->
+                <!--                  *ngIf="!((!calendarVariables.start.maxDate || calendarVariables.start.maxDate.isAfter(calendarVariables.start.calendar.lastDay)) && (!linkedCalendars || singleDatePicker ))">-->
+                <!--                  <th></th>-->
+                <!--                </ng-container>-->
 
               </tr>
 

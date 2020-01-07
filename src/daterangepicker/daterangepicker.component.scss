@@ -502,6 +502,7 @@ $input-height: 3rem !default;
       margin: 0;
       padding: 0;
     }
+
   }
 
   th.month > div {
@@ -1068,4 +1069,7 @@ td span {
 .menu-drawer {
  display: none;
   box-shadow: 4px 5px 3px #0000003d;
+}
+.yearselect, .monthselect {
+  display: none !important;
 }

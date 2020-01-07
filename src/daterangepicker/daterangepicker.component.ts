@@ -75,6 +75,13 @@ export class CalendarVariables {
   end: CalendarData;
 }
 
+export interface RangesInterface {
+  name: string;
+  value: any[];
+  ranges: any[];
+  isSelected: boolean;
+}
+
 @Component({
   selector: 'ngx-daterangepicker-material',
   styleUrls: ['./daterangepicker.component.scss'],
@@ -150,8 +157,6 @@ export class DaterangepickerComponent implements OnInit {
   // custom ranges
   @Input()
   ranges: any = {};
-  @Input()
-  showCustomRangeLabel: boolean;
   @Input()
   showCancel = false;
   @Input()
@@ -270,7 +275,7 @@ export class DaterangepickerComponent implements OnInit {
       this.ranges = this.parseRangesToVm(this.ranges);
 
       // if there's no ranges given, display calender in place of ranges list
-      this.showCalInRanges = (!this.rangesArray.length) || this.alwaysShowCalendars;
+      this.showCalInRanges = (!this.ranges.length) || this.alwaysShowCalendars;
 
       // if no time picker is defined then,
       // set start date as start of start date
@@ -714,7 +719,7 @@ export class DaterangepickerComponent implements OnInit {
     if (!this.singleDatePicker && this.autoUpdateInput) {
       if (this.startDate && this.endDate) {
         // if we use ranges and should show range label on inpu
-        if (this.rangesArray.length && this.showRangeLabelOnInput === true && this.chosenRange &&
+        if (this.ranges.length && this.showRangeLabelOnInput === true && this.chosenRange &&
           this.locale.customRangeLabel !== this.chosenRange) {
           this.chosenLabel = this.chosenRange;
         } else {
@@ -736,40 +741,31 @@ export class DaterangepickerComponent implements OnInit {
    * this should calculate the label
    */
   calculateChosenLabel() {
-    let customRange = true;
-    let i = 0;
-    if (this.rangesArray.length > 0) {
-      for (const range of this.ranges) {
+    if (this.ranges.length > 0) {
+      const flattenRanges = [];
+      this.flattenRanges(this.ranges, flattenRanges);
+
+      flattenRanges.forEach(range => {
         if (this.timePicker) {
           const format = this.timePickerSeconds ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm';
-          // ignore times when comparing dates if time picker seconds is not enabled
-          if (this.startDate.format(format) === this.ranges[range][0].format(format)
-            && this.endDate.format(format) === this.ranges[range][1].format(format)) {
-            customRange = false;
-            this.chosenRange = this.rangesArray[i];
-            break;
-          }
-        } else {
-          // ignore times when comparing dates if time picker is not enabled
-          if (this.startDate.format('YYYY-MM-DD') === this.ranges[range][0].format('YYYY-MM-DD')
-            && this.endDate.format('YYYY-MM-DD') === this.ranges[range][1].format('YYYY-MM-DD')) {
-            customRange = false;
-            this.chosenRange = this.rangesArray[i];
-            break;
-          }
-        }
 
-        i++;
-      }
-      if (customRange) {
-        if (this.showCustomRangeLabel) {
-          this.chosenRange = this.locale.customRangeLabel;
+          if (!range.ranges.length) {
+            // ignore times when comparing dates if time picker seconds is not enabled
+            if (this.startDate.format(format) === range.value[0].format(format)
+              && this.endDate.format(format) === range.value[1].format(format)) {
+              this.selectRange(this.ranges, range.name);
+            }
+          }
         } else {
-          this.chosenRange = null;
+          if (!range.ranges.length) {
+            // ignore times when comparing dates if time picker is not enabled
+            if (this.startDate.format('YYYY-MM-DD') === range.value[0].format('YYYY-MM-DD')
+              && this.endDate.format('YYYY-MM-DD') === range.value[1].format('YYYY-MM-DD')) {
+              this.selectRange(this.ranges, range.name);
+            }
+          }
         }
-        // if custom label: show calenar
-        this.showCalInRanges = true;
-      }
+      });
     }
 
     this.updateElement();
@@ -1091,7 +1087,7 @@ export class DaterangepickerComponent implements OnInit {
         return;
       }
     }
-    if (this.rangesArray.length) {
+    if (this.ranges.length) {
       this.chosenRange = this.locale.customRangeLabel;
     }
     if (!(this.calendarVariables[side].calendar[1][1].month() === this.calendarVariables[side].calendar[row][col].month())) {
@@ -1219,12 +1215,13 @@ export class DaterangepickerComponent implements OnInit {
   /**
    *  Click on the custom range
    * @param e: Event
-   * @param ranges
    * @param range
    */
-  clickRange(e, ranges, range) {
+  clickRange(e, range) {
+    this.selectRange(this.ranges, range.name);
+
     this.chosenRange = range.name;
-    const dates = ranges.find(r => r.name === range.name);
+    const dates = this.findRange(this.ranges, range.name);
     this.startDate = dates.value[0].clone();
     this.endDate = dates.value[1].clone();
     if (this.showRangeLabelOnInput && range.name !== this.locale.customRangeLabel) {
@@ -1232,7 +1229,7 @@ export class DaterangepickerComponent implements OnInit {
     } else {
       this.calculateChosenLabel();
     }
-    this.showCalInRanges = (!Object.keys(this.ranges).length) || this.alwaysShowCalendars;
+    this.showCalInRanges = (!this.ranges.length) || this.alwaysShowCalendars;
 
     if (!this.timePicker) {
       this.startDate.startOf('day');
@@ -1252,6 +1249,17 @@ export class DaterangepickerComponent implements OnInit {
     }
 
     this.updateView();
+  }
+
+  /**
+   * double clicked on a range
+   * select that range and close date picker
+   * @param e
+   * @param range
+   */
+  dblClickRange(e, range) {
+    this.clickRange(e, range);
+    this.clickApply();
   }
 
   show(e?) {
@@ -1500,8 +1508,12 @@ export class DaterangepickerComponent implements OnInit {
     }
   }
 
+  /**
+   * parse given range to view model that datepicker uses
+   * @param ranges
+   */
   private parseRangesToVm(ranges) {
-    const parsedRanges: Array<{ name: string, value: any[], ranges: any[] }> = [];
+    const parsedRanges: Array<RangesInterface> = [];
 
     for (const range in ranges) {
       if (!(ranges[range][0] instanceof moment)) {
@@ -1509,18 +1521,91 @@ export class DaterangepickerComponent implements OnInit {
         parsedRanges.push({
           name: range,
           value: [],
-          ranges: subRange
+          ranges: subRange,
+          isSelected: false
         });
       } else {
         const value = this.rangeValidator(ranges, range);
         parsedRanges.push({
           name: range,
           value: [value.start, value.end],
-          ranges: []
+          ranges: [],
+          isSelected: false
         });
       }
     }
 
     return parsedRanges;
+  }
+
+  /**
+   * select range
+   * @param ranges
+   * @param rangeName
+   */
+  private selectRange(ranges: RangesInterface[], rangeName: string): boolean {
+    let isSelected = false;
+    if (ranges && ranges.length) {
+      ranges.forEach(range => {
+        if (range.name === rangeName) {
+          range.isSelected = true;
+          isSelected = true;
+        } else {
+          if (range.ranges && range.ranges.length) {
+            range.isSelected = this.selectRange(range.ranges, rangeName);
+          } else {
+            range.isSelected = false;
+            isSelected = false;
+          }
+        }
+      });
+    } else {
+      return false;
+    }
+    return isSelected;
+  }
+
+
+  /**
+   * get range object from ranges array by range name
+   * @param ranges
+   * @param label
+   */
+  private findRange(ranges, label) {
+    let range;
+    if (ranges && ranges.length) {
+      ranges.forEach(subRange => {
+
+        if (subRange.name === label) {
+          range = subRange;
+          return subRange;
+        } else {
+          if (subRange.ranges && subRange.ranges.length) {
+            range = this.findRange(subRange.ranges, label);
+            return range;
+          }
+        }
+      });
+    } else {
+      return range;
+    }
+
+    return range;
+  }
+
+  /**
+   * flatten ranges array
+   */
+  private flattenRanges(ranges, flattenRanges = []) {
+    if (ranges && ranges.length) {
+      ranges.forEach(range => {
+        if (range.ranges && range.ranges.length) {
+          this.flattenRanges(range.ranges, flattenRanges);
+          flattenRanges.push(range);
+        } else {
+          flattenRanges.push(range);
+        }
+      });
+    }
   }
 }
