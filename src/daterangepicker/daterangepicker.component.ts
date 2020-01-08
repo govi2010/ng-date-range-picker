@@ -1061,7 +1061,24 @@ export class DaterangepickerComponent implements OnInit {
     return false;
   }
 
+  /**
+   * key up event for up to input boxes
+   * ensure only number are added in that tax box
+   * @param event
+   */
+  uptoInputKeyUp(event) {
+    if (event.shiftKey || event.ctrlKey || (event.which >= 37 && event.which <= 40)) {
+      return;
+    }
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+  }
+
   uptoToday(e: Event, startFrom: number, days: number) {
+    const convertToNumber = Number(days);
+    if (isNaN(convertToNumber)) {
+      alert('only number are allowed');
+      (event.target as any).value = '';
+    }
     const dates = [moment().subtract(days, 'days'), moment().subtract(startFrom, 'days')];
     this.startDate = dates[0].clone();
     this.endDate = dates[1].clone();
