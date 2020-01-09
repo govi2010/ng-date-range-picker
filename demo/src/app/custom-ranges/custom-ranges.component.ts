@@ -39,8 +39,8 @@ export class CustomRangesComponent implements OnInit {
   };
 
   constructor() {
-    this.maxDate = moment().add(2, 'month');
-    this.minDate = moment().subtract(50, 'days');
+    this.maxDate = moment().add(1, 'year');
+    this.minDate = moment().subtract(1, 'year');
 
     this.alwaysShowCalendars = true;
     this.keepCalendarOpeningWithRange = true;
