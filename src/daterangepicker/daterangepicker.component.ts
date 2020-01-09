@@ -1073,8 +1073,17 @@ export class DaterangepickerComponent implements OnInit {
     event.target.value = event.target.value.replace(/[^0-9]/g, '');
   }
 
-  uptoToday(e: Event, startFrom: number, days: number) {
-    const dates = [moment().subtract(days, 'days'), moment().subtract(startFrom, 'days')];
+  uptoToday(e: Event, days: number) {
+    const dates = [moment().subtract(days ? (days - 1) : days, 'days'), moment()];
+    this.startDate = dates[0].clone();
+    this.endDate = dates[1].clone();
+
+    this.calculateChosenLabel();
+    this.updateView();
+  }
+
+  uptoYesterday(e: Event, days: number) {
+    const dates = [moment().subtract(days, 'days'), moment().subtract(days ? 1 : 0, 'days')];
     this.startDate = dates[0].clone();
     this.endDate = dates[1].clone();
 

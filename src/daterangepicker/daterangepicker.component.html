@@ -51,12 +51,12 @@
         <li>
           <button><input type="text"
                          style="width: 28px;height: 17px;margin-right: 3px;font-size: 12px;margin-bottom: 0;" (keyup)="uptoInputKeyUp($event)"
-                         (change)="uptoToday($event,0,$event.target.value)"> days up
+                         (change)="uptoToday($event,$event.target.value)"> days up
             to today
           </button>
         </li>
         <li>
-          <button><input type="text" (change)="uptoToday($event,1,$event.target.value)" (keyup)="uptoInputKeyUp($event)"
+          <button><input type="text" (change)="uptoYesterday($event,$event.target.value)" (keyup)="uptoInputKeyUp($event)"
                          style="width: 28px;height: 17px;margin-right: 3px;font-size: 12px;margin-bottom: 0;"> days up
             to yesterday
           </button>
