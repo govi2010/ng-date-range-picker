@@ -1074,11 +1074,6 @@ export class DaterangepickerComponent implements OnInit {
   }
 
   uptoToday(e: Event, startFrom: number, days: number) {
-    const convertToNumber = Number(days);
-    if (isNaN(convertToNumber)) {
-      alert('only number are allowed');
-      (event.target as any).value = '';
-    }
     const dates = [moment().subtract(days, 'days'), moment().subtract(startFrom, 'days')];
     this.startDate = dates[0].clone();
     this.endDate = dates[1].clone();

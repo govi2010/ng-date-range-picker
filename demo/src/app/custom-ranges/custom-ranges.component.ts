@@ -29,8 +29,8 @@ export class CustomRangesComponent implements OnInit {
         .endOf('month')
     ],
     'This Week': [{
-      'Sun - Today': [moment(), moment()],
-      'Mon - Today': [moment(), moment()]
+      'Sun - Today': [moment().startOf('week'), moment()],
+      'Mon - Today': [moment().startOf('week').add(1, 'd'), moment()]
     }]
   };
 
