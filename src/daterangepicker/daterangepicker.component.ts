@@ -1591,7 +1591,8 @@ export class DaterangepickerComponent implements OnInit {
   private findRange(ranges, label) {
     let range;
     if (ranges && ranges.length) {
-      ranges.forEach(subRange => {
+      for (let i = 0; i < ranges.length; i++) {
+        const subRange = ranges[i];
 
         if (subRange.name === label) {
           range = subRange;
@@ -1602,7 +1603,8 @@ export class DaterangepickerComponent implements OnInit {
             return range;
           }
         }
-      });
+      }
+
     } else {
       return range;
     }
