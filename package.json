@@ -29,7 +29,7 @@
     "@angular/router": "^6.0.2",
     "core-js": "^2.5.4",
     "materialize-css": "1.0.0",
-    "moment": "2.23.0",
+    "moment": "2.29.4",
     "ngx-mask": "^7.3.5",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
